@@ -68,9 +68,9 @@ need to use a VM; which anyway seems like a good transition to
 unifying my work environments. So my plan is to test the usability of
 a VM-on-the-Mac as a daily work environment.
 
-## Getting a VM running on the Mac
+## Diar: Getting a VM running on the Mac
 
-### Running Arch Linux
+### Running Arch Linux in UTM
 
 My goal is to get Guix running. However, Guix don't provide an
 installation image for Aarch64. So my new plan is to get _some_
@@ -96,7 +96,7 @@ The result is a text-only virtual machine. It presents as having four cores
 (which I think map to the four efficiency cores on my Mac), 2 GB of
 RAM, and a 10 GB hard drive.
 
-### Running Ubuntu Server
+### Running Ubuntu Server in UTM
 
 Okay, Arch linux turned out to be too barebones and there was too much
 to do to get Guix running.
@@ -192,3 +192,64 @@ error: plain image kernel not supported -- rebuild with
 CONFIG_U(EFI)_STUB enabled.
 ```
 
+## Running Ubuntu in QEMU
+
+I think UTM is causing too much confusion. Let's try to run Ubuntu
+directly in QEMU.
+
+I think the steps I need to take are:
+
+- Create a new "hard drive" as an image file, on which to install
+  Ubuntu
+- Run QEMU with this and the "CD" image mounted.
+
+### From ISO
+
+1. Download `ubuntu-24.04-live-server-arm64.iso`
+2. Make a "hard drive":
+
+```sh
+qemu-img create -f qcow2 ubuntu.img 128G
+```
+
+3. Run the installation image. This needed trial-and-error! 
+
+```sh
+qemu-system-aarch64 \
+    -nographic \
+    -cpu host -machine virt,accel=hvf \
+    -smp 4 -m 4G \
+    -drive if=virtio,index=0,file=ubuntu.img \
+    -bios edk2-aarch64-code.fd
+```
+
+I do get some errors when launching the above but Ubuntu still boots,
+so I am not entirely sure what they mean. 
+
+Oddly, the guest can "see" the internet, though I didn't specify a
+network device in the qemu options. Maybe that's the default?
+
+
+
+### Installing Guix
+
+As above:
+
+1. Ran: `sudo apt install guix`, followed by `guix pull`
+   - Which took a really long time --- must figure out what that
+     does. I think it's rebuilding packages from scratch rather than
+     using prebuilt binaries.
+   - Oh, needed to authorize "substitute" servers:
+  
+   ```sh
+   # sudo guix archive --authorize < prefix/share/guix/ci.guix.gnu.org.pub
+   # sudo guix archive --authorize < prefix/share/guix/bordeaux.guix.gnu.org.pub
+   ```
+
+   - also, might need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
+
+2. Followed instructions here:
+   [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
+
+3. Made a `config.scm`. Ran `guix system image --image-type=iso9660
+   config.scm`
