@@ -68,188 +68,138 @@ need to use a VM; which anyway seems like a good transition to
 unifying my work environments. So my plan is to test the usability of
 a VM-on-the-Mac as a daily work environment.
 
-## Diar: Getting a VM running on the Mac
-
-### Running Arch Linux in UTM
-
-My goal is to get Guix running. However, Guix don't provide an
-installation image for Aarch64. So my new plan is to get _some_
-distribution running.
-
-UTM is an app for MacOS which wraps QEMU in a (hopefully)
-user-friendly GUI. UTM provide a downloadable ArchLinux installation.
-
-I unzipped the download and moved the resulting to ~/vms. It's a
-package with the following structure:
+## Getting a VM running in QEMU on the Mac
 
 ```sh
-ArchLinux.utm
-├── config.plist
-└── Data
-   ├── BB208CBD-BFB4-4895-9542-48527C9E5473.qcow2
-   └── efi_vars.fd
+brew install qemu
 ```
 
-The file ending in ~.qcow2~ is a disk image.
+There is no pre-built Guix image for Aarch64, so this process
+bootstraps from another Linux distro. I am currently using Armbian
+(because it's ARM-specific) from
+[https://www.armbian.com/qemu-uboot-arm64/]. You wil need two
+(compressed) files: one ends in `.qcow2.xz` (that's the Linux image)
+and one ends in `.u-boot.bin` (that's firmware). Previously I had been
+running Ubuntu which uses UEFI as its firmware -- the whole thing is
+extremely confusing.
 
-The result is a text-only virtual machine. It presents as having four cores
-(which I think map to the four efficiency cores on my Mac), 2 GB of
-RAM, and a 10 GB hard drive.
-
-### Running Ubuntu Server in UTM
-
-Okay, Arch linux turned out to be too barebones and there was too much
-to do to get Guix running.
-
-I think perhaps starting with Ubuntu is a better idea. That's what's
-likely to be running on any server I use, anyway.
-
-1. I downloaded an ISO file.
-2. Started following the guide here:
-   [https://docs.getutm.app/guides/ubuntu/]
-   - 8192 MB RAM
-   - Default number of cores
-   - I ticked "Enable hardware OpenGL acceleration"
-   - 64 GB drive
-3. GNU Grub started okay, started Ubuntu installation
-   - Did NOT "Search for third-party drivers"
-   - Turned OFF "Set up this disk as an LVM group"
-   - SELECTED "Install OpenSSH server"
-4. After "Installation complete!", rebooting failed. Turned off VM,
-   unmounted the ISO, and restarted from UTM.
-5. When logged in, ran `sudo apt upgrade`, and `sudo apt install spice-vdagent`
-
-Here is the complete QEMU settings:
+Uncompress these files (with `unxz`). Rename them `armbian.qcow2` and
+`u-boot.bin`. Then
 
 ```sh
-qemu-system-aarch64 -L /Applications/UTM.app/Contents/Resources/qemu -S\
-					-spice \
-					unix=on,addr=77A2E4EE-26C9-4E35-A316-C4E719B4883A.spice,\
-					disable-ticketing=on,image-compression=off,playback-compression=off,\
-					streaming-video=off,gl=on -chardev spiceport,name=org.qemu.monitor.qmp.0,\
-					id=org.qemu.monitor.qmp -mon chardev=org.qemu.monitor.qmp,\
-					mode=control\
-					-nodefaults -vga none\
-					-device virtio-net-pci, mac=C6:92:33:CA:AA:9F, netdev=net0\
-					-netdev vmnet-shared,id=net0 -device virtio-gpu-gl-pci\
-					-cpu host -smp cpus=4,sockets=1,cores=4,threads=1\
-					-machine virt -accel hvf\
-					-drive if=pflash,format=raw,unit=0,file=/Applications/UTM.app/Contents/Resources/qemu/edk2-aarch64-code.fd,readonly=on\
-					-drive if=pflash,unit=1,file=/Users/james/Library/Containers/com.utmapp.UTM/Data/Documents/Ubuntu.utm/Data/efi_vars.fd\
-					-m 8192 -audiodev spice,id=audio0 -device intel-hda\
-					-device hda-duplex,audiodev=audio0\
-					-device nec-usb-xhci,id=usb-bus\
-					-device usb-tablet,bus=usb-bus.0\
-					-device usb-mouse,bus=usb-bus.0\
-					-device usb-kbd,bus=usb-bus.0\
-					-device qemu-xhci,id=usb-controller-0\
-					-chardev spicevmc,name=usbredir,id=usbredirchardev0\
-					-device usb-redir,chardev=usbredirchardev0,id=usbredirdev0,bus=usb-controller-0.0\
-					-chardev spicevmc,name=usbredir,id=usbredirchardev1\
-					-device usb-redir,chardev=usbredirchardev1,id=usbredirdev1,bus=usb-controller-0.0\
-					-chardev spicevmc,name=usbredir,id=usbredirchardev2\
-					-device usb-redir,chardev=usbredirchardev2,id=usbredirdev2,bus=usb-controller-0.0\
-					-device usb-storage,drive=drive5DCBC04B-4835-452E-BB8D-042C074E9078,removable=true,bootindex=0,bus=usb-bus.0\
-					-drive if=none,media=cdrom,id=drive5DCBC04B-4835-452E-BB8D-042C074E9078,readonly=on\
-					-device virtio-blk-pci,drive=drive91B59E58-B100-4654-A7D6-F0412AC1AFB4,bootindex=1\
-					-drive if=none,media=disk,id=drive91B59E58-B100-4654-A7D6-F0412AC1AFB4,file=/Users/james/Library/Containers/com.utmapp.UTM/Data/Documents/Ubuntu.utm/Data/91B59E58-B100-4654-A7D6-F0412AC1AFB4.qcow2,discard=unmap,detect-zeroes=unmap\
-					-device virtio-serial\
-					-device virtserialport,chardev=org.qemu.guest_agent,name=org.qemu.guest_agent.0\
-					-chardev spiceport,name=org.qemu.guest_agent.0,id=org.qemu.guest_agent\
-					-device virtserialport,chardev=vdagent,name=com.redhat.spice.0\
-					-chardev spicevmc,id=vdagent,debug=0,name=vdagent\
-					-name Ubuntu -uuid 77A2E4EE-26C9-4E35-A316-C4E719B4883A\
-					-device virtio-rng-pci -device virtio-balloon-pci
+qemu-img resize armbian.qcow 128G
 ```
 
-(I also ENABLED "Balloon device")
+will make the nominal size of the virtual machine's disk 128
+GB. (Nominal because the file is only as large as needed.)
+
+Then run the VM. I am using:
+
+```txt
+sudo qemu-system-aarch64 \
+    -runas $(whoami) \
+    -nographic \
+    -cpu host -machine virt \
+    -smp 4 -m 6G \
+    -accel hvf \
+    -nic vmnet-shared \
+    -drive if=virtio,index=0,file=armbian.qcow2 \
+    -device virtio-rng-pci \
+    -bios u-boot.bin
+```
+
+Notes:
+
+- If you don't `sudo`, the network "vmnet-shared" will fail. This
+  network device is part of Apple's hypervisor framework (and is
+  frustrating undocumented in the QEMU docs). There are other network
+  devices but I haven't yet figured them out. (The default will let
+  the guest VM see the internet, but won't let the Mac host see the
+  guest.) I've added `-runas username` to change the userid back to
+  non-root after QEMU is started.
+  
+  To enable fingerprint authentication for sudo, copy
+  `/etc/pam.d/sudo_local.template` to `sudo_local` and edit it to
+  uncomment the single line.
+  
+- The line `-bios u-boot.bin` uses the file from Armbian. (Other
+  firmware, eg, UEFI, comes pre-built with QEMU.)
+  
+- The line `-smp 4 -m 12G` sets the number of guest cores to 4 (and
+  will use 4 actual cores) and the guest RAM to 12 GB. I originally
+  used 8G RAM but building the kernel maxxed out the space on tmpfs
+  (which defaults to 50% of RAM on Armbian). 
 
 ### Making a Guix distribution image
 
-1. Ran: `sudo apt install guix`, followed by `guix pull`
-   - Which took a really long time --- must figure out what that
-     does. I think it's rebuilding packages from scratch rather than
-     using prebuilt binaries.
-   - Oh, needed to authorize "substitute" servers:
-  
-   ```sh
-   # guix archive --authorize < prefix/share/guix/ci.guix.gnu.org.pub
-   # guix archive --authorize < prefix/share/guix/bordeaux.guix.gnu.org.pub
-   ```
+1. In the VM, run `sudo apt install guix` followed by
 
-   - also, might need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
-
-2. Followed instructions here:
-   [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
-
-3. Made a `config.scm`. Ran `guix system image --image-type=iso9660
-   config.scm`
-   
-That got me an error:
-
-```
-error: plain image kernel not supported -- rebuild with
-CONFIG_U(EFI)_STUB enabled.
-```
-
-## Running Ubuntu in QEMU
-
-I think UTM is causing too much confusion. Let's try to run Ubuntu
-directly in QEMU.
-
-I think the steps I need to take are:
-
-- Create a new "hard drive" as an image file, on which to install
-  Ubuntu
-- Run QEMU with this and the "CD" image mounted.
-
-### From ISO
-
-1. Download `ubuntu-24.04-live-server-arm64.iso`
-2. Make a "hard drive":
-
-```sh
-qemu-img create -f qcow2 ubuntu.img 128G
-```
-
-3. Run the installation image. This needed trial-and-error! 
-
-```sh
-qemu-system-aarch64 \
-    -nographic \
-    -cpu host -machine virt,accel=hvf \
-    -smp 4 -m 4G \
-    -drive if=virtio,index=0,file=ubuntu.img \
-    -bios edk2-aarch64-code.fd
-```
-
-I do get some errors when launching the above but Ubuntu still boots,
-so I am not entirely sure what they mean. 
-
-Oddly, the guest can "see" the internet, though I didn't specify a
-network device in the qemu options. Maybe that's the default?
-
-
-
-### Installing Guix
-
-As above:
-
-1. Ran: `sudo apt install guix`, followed by `guix pull`
-   - Which took a really long time --- must figure out what that
-     does. I think it's rebuilding packages from scratch rather than
-     using prebuilt binaries.
-   - Oh, needed to authorize "substitute" servers:
-  
    ```sh
    # sudo guix archive --authorize < prefix/share/guix/ci.guix.gnu.org.pub
    # sudo guix archive --authorize < prefix/share/guix/bordeaux.guix.gnu.org.pub
    ```
 
-   - also, might need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
+   where "prefix", in my case, turns out to be "`/usr`".
 
-2. Followed instructions here:
+   Then `guix pull`. This may take a long time if the binary server
+   hasn't got up to date binaries and guix decides to recompile.
+  
+   Then (as prompted):
+
+   ```sh
+   GUIX_PROFILE="/home/james/.config/guix/current"
+     . "$GUIX_PROFILE/etc/profile"
+   ```
+
+2. Perhaps follow instructions here:
    [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
+
+   ```sh
+   guix install glibc-locales
+   ```
+
+   (<ight need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
+
+
+https://github.com/mzadel/guix-on-m1-qemu
+
+qemu-img create -f qcow2 -o size=128G guix.qcow2
+
+Add to armbian.sh:
+
+  -drive if=virtio,index=1,file=guix.qcow2 \
+
+
+Use cfdisk (as root) to make two partitions on /dev/vbd: 
+- the first is type "EFI System", of 1G
+- the second is type "Linux filesystem" of the remaining space
+
+Then format these:
+
+mkfs.fat /dev/vdb1
+mkfs.ext4 /dev/vdb2
+
+Then mount
+
+mount /dev/vdb2 /mnt/
+mkdir /mnt/etc
+cp config.scm /mnt/etc
+mkdir -p /mnt/boot/efi
+
+mount /dev/vdb1 /mnt/boot/efi/
+
+Then `guix system init --system=aarch64-linux --skip-checks /mnt/etc/config.scm /mnt`. Although, if you
+sudo that, guile can't find the packages; and if you run it as you, it
+can't finalise the installation. So ... I ran once as non-root and
+once as sudo. But I think perhaps the right thing is just to start
+from the top as root.
 
 3. Made a `config.scm`. Ran `guix system image --image-type=iso9660
    config.scm`
+
+   That got me an error:
+
+   ```txt
+   error: plain image kernel not supported -- rebuild with
+   CONFIG_U(EFI)_STUB enabled.
+   ```
