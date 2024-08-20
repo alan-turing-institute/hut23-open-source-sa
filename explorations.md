@@ -70,12 +70,120 @@ a VM-on-the-Mac as a daily work environment.
 
 ## Getting a VM running in QEMU on the Mac
 
+### Install QEMU
+
 ```sh
 brew install qemu
 ```
 
+### Install a Debian image
+
 There is no pre-built Guix image for Aarch64, so this process
-bootstraps from another Linux distro. I am currently using Armbian
+bootstraps from another Linux distro. 
+
+I am currently using Debian who provide a minimal image for use with
+QEMU, under "Cloud image": [debian-12-nocloud-arm64.qcow2](https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-arm64.qcow2). 
+
+```sh
+qemu-img resize armbian.qcow 128G
+```
+
+This will set the nominal size of the virtual machine's disk to 128
+GB. Note that it does not change the size of the partition as seen
+from within the VM; that will need to be changed later.
+
+Then run the VM. I am using:
+
+```txt
+sudo qemu-system-aarch64 \
+    -runas $(whoami) \
+    -nographic \
+    -cpu host -machine virt \
+    -smp 4 -m 6G \
+    -accel hvf \
+    -nic vmnet-shared \
+    -drive if=virtio,index=0,file=armbian.qcow2 \
+    -device virtio-rng-pci \
+    -bios edk2-aarch64-code.fd
+```
+
+Notes:
+
+- If you don't `sudo`, the network "vmnet-shared" will fail. This
+  network device is part of Apple's hypervisor framework (and is
+  frustrating undocumented in the QEMU docs). There are other network
+  devices but I haven't yet figured them out. (The default will let
+  the guest VM see the internet, but won't let the Mac host see the
+  guest.) I've added `-runas username` to change the userid back to
+  non-root after QEMU is started.
+  
+  NB: To enable fingerprint authentication for sudo, copy
+  `/etc/pam.d/sudo_local.template` to `sudo_local` and edit it to
+  uncomment the single line.
+  
+- The line `-smp 4 -m 12G` sets the number of guest cores to 4 (and
+  will use 4 actual cores) and the guest RAM to 12 GB. I originally
+  used 8G RAM but building the kernel maxxed out the space on tmpfs
+  (which defaults to 50% of RAM on Armbian). 
+
+- The line `-bios edk2-aarch64-code.fd` specifies UEFI firmware that
+  comes pre-built with QEMU.
+  
+That should boot Debian with a root user with no password.
+
+### Resize the partition
+
+In Debian (as root):
+
+```sh
+apt update
+apt upgrade
+apt install fdisk
+cfdisk
+```
+
+Then run "Sort" to fix the partition order; then resize `/dev/vda1` to
+fill the space.
+
+Then reboot.
+
+### Install the Guix package manager
+
+In the VM (still as root), run `apt install guix` followed by
+
+```sh
+guix archive --authorize < /usr/share/guix/ci.guix.gnu.org.pub
+guix archive --authorize < /usr/share/guix/bordeaux.guix.gnu.org.pub
+```
+	
+Then `guix pull`. This may take a long time if the binary server
+hasn't got up to date binaries and guix decides to recompile.
+
+
+### Making a Guix distribution image
+
+  
+   Then (as prompted):
+
+   ```sh
+   GUIX_PROFILE="/home/james/.config/guix/current"
+     . "$GUIX_PROFILE/etc/profile"
+   ```
+
+2. Perhaps follow instructions here:
+   [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
+
+   ```sh
+   guix install glibc-locales
+   ```
+
+   (<ight need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
+
+
+
+# OLD
+
+I am currently using Armbian
 (because it's ARM-specific) from
 [https://www.armbian.com/qemu-uboot-arm64/]. You wil need two
 (compressed) files: one ends in `.qcow2.xz` (that's the Linux image)
