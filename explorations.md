@@ -102,7 +102,7 @@ sudo qemu-system-aarch64 \
     -smp 4 -m 6G \
     -accel hvf \
     -nic vmnet-shared \
-    -drive if=virtio,index=0,file=armbian.qcow2 \
+    -drive if=virtio,index=0,file=debian-12-nocloud-arm64.qcow2 \
     -device virtio-rng-pci \
     -bios edk2-aarch64-code.fd
 ```
@@ -159,26 +159,32 @@ guix archive --authorize < /usr/share/guix/bordeaux.guix.gnu.org.pub
 Then `guix pull`. This may take a long time if the binary server
 hasn't got up to date binaries and guix decides to recompile.
 
+Then follow the instructions:
+
+```sh
+hash guix
+GUIX_PROFILE="/root/.config/guix/current"
+. "$GUIX_PROFILE/etc/profile"
+guix install glibc-locales
+```
+
+Perhaps follow instructions here:
+   [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
+
+And may need to logout/in to set up path (which is set in
+`/etc/profile.d/guix.sh`)
 
 ### Making a Guix distribution image
 
-  
-   Then (as prompted):
+Example config file in [gnu/system/examples/bare-bones.tmpl](https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/system/examples/bare-bones.tmpl).
 
-   ```sh
-   GUIX_PROFILE="/home/james/.config/guix/current"
-     . "$GUIX_PROFILE/etc/profile"
-   ```
+```sh
+apt install ssh
+passwd
+nano /etc/ssh/sshd_config
+```
 
-2. Perhaps follow instructions here:
-   [https://guix.gnu.org/manual/en/html_node/Application-Setup.html]
-
-   ```sh
-   guix install glibc-locales
-   ```
-
-   (<ight need to logout/in to set up path (which is set in `/etc/profile.d/guix.sh`)
-
+Change `PermitRootLogin` to `yes`.
 
 
 # OLD
