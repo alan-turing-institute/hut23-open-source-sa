@@ -1,5 +1,10 @@
 # Moving to Linux -- James Geddes
 
+**UPDATE SEPTEMBER 2025**
+This attempt failed. I am trying again here: https://github.com/alan-turing-institute/research-engineering-group/wiki/Linux-at-work
+
+**END OF UPDATE**
+
 Contains my notes on moving to Linux in the long-run.
 
 ## Motivation
