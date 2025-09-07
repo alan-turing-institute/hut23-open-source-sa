@@ -78,11 +78,11 @@ brew install qemu
 
 ### Install a Debian image
 
-There is no pre-built Guix image for Aarch64, so this process
-bootstraps from another Linux distro. 
+There is no pre-built Guix image for AArch64, so this process
+bootstraps from another Linux distro.
 
 I am currently using Debian who provide a minimal image for use with
-QEMU, under "Cloud image": [debian-12-nocloud-arm64.qcow2](https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-arm64.qcow2). 
+QEMU, under "Cloud image": [debian-12-nocloud-arm64.qcow2](https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-arm64.qcow2).
 
 ```sh
 qemu-img resize armbian.qcow 128G
@@ -102,7 +102,7 @@ sudo qemu-system-aarch64 \
     -smp 4 -m 6G \
     -accel hvf \
     -nic vmnet-shared \
-    -drive if=virtio,index=0,file=armbian.qcow2 \
+    -drive if=virtio,index=0,file=debian-12-nocloud-arm64.qcow2 \
     -device virtio-rng-pci \
     -bios edk2-aarch64-code.fd
 ```
@@ -236,7 +236,7 @@ Notes:
 - The line `-smp 4 -m 12G` sets the number of guest cores to 4 (and
   will use 4 actual cores) and the guest RAM to 12 GB. I originally
   used 8G RAM but building the kernel maxxed out the space on tmpfs
-  (which defaults to 50% of RAM on Armbian). 
+  (which defaults to 50% of RAM on Armbian).
 
 ### Making a Guix distribution image
 
