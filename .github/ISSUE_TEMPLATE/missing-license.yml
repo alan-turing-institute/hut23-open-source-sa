@@ -1,0 +1,16 @@
+name: Test missing-license
+
+on:
+  workflow_dispatch:
+
+jobs:
+  missing-license:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: alan-turing-institute/missing-license@main
+        with:
+          organization: alan-turing-institute
+          dry_run: "true"
+          app_id: ${{ secrets.APP_ID }}
+          app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app_installation_id: ${{ secrets.APP_INSTALLATION_ID }}
