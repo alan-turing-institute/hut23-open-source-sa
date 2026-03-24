@@ -2,7 +2,7 @@
 
 Without a license, **no one is allowed to download, copy, modify, or use your code** — even though the repository is public.
 
-Since your repo is public, we assume you want to grant the general public some rights to use your work. This typically means publishing your software under one of the OSI approved licences, or in the case of non-code contributions one of the Creative Commons licences that supports derivative works. REG's default choices are:
+Since your repo is public, you should provide a license to explicitly tell others how they may use your work. This typically means publishing your software under one of the OSI approved licences, or in the case of non-code contributions one of the Creative Commons licences that supports derivative works. REG's default choices are:
 
 - [BSD-3-Clause](https://opensource.org/license/BSD-3-clause) for [permissive](https://en.wikipedia.org/wiki/Permissive_software_license) source code licencing.
 - [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) for [copyleft](https://en.wikipedia.org/wiki/Copyleft) code licencing.
@@ -36,4 +36,4 @@ If this repository is intentionally unlicensed, please close this issue with a c
 
 ---
 
-If you have any questions, please refer to the Turing's [Open Publication of Research Outputs Policy Statement](https://mathison.turing.ac.uk/page/2239) and REG's [Open Source Policy](https://alan-turing-institute.github.io/REG-handbook/docs/how_we_work/open_source_policy/) or contact the REG Open Source Service Area.
+This bot is run by the REG Open Source Service Area. If you have any questions, please refer to the Turing's [Open Publication of Research Outputs Policy Statement](https://mathison.turing.ac.uk/page/2239) and REG's [Open Source Policy](https://alan-turing-institute.github.io/REG-handbook/docs/how_we_work/open_source_policy/) or contact the REG Open Source Service Area.
