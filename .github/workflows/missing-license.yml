@@ -1,4 +1,4 @@
-name: Test missing-license
+name: Run missing-license action
 
 on:
   workflow_dispatch:
