@@ -2,6 +2,7 @@ name: Test missing-license
 
 on:
   workflow_dispatch:
+  
 
 jobs:
   missing-license:
