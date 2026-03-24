@@ -8,6 +8,7 @@ jobs:
   missing-license:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: alan-turing-institute/missing-license@main
         with:
           organization: alan-turing-institute
