@@ -15,7 +15,7 @@ jobs:
         with:
           organization: alan-turing-institute
           app_id: ${{ secrets.APP_ID }}
-          dry_run: "true"
+          dry_run: "false"
           app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
           app_installation_id: ${{ secrets.APP_INSTALLATION_ID }}
           issue_body_path: ./missing-license-issue-template.md
