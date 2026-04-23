@@ -1,0 +1,62 @@
+name: stale repo identifier
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: stale repo identifier
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run stale_repos tool
+        uses: github-community-projects/stale-repos@v9
+        env:
+          GH_APP_ID: ${{ secrets.APP_ID }}
+          GH_APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          ORGANIZATION: "alan-turing-institute"
+          EXEMPT_TOPICS: "keep,template"
+          INACTIVE_DAYS: 365
+          ACTIVITY_METHOD: "pushed"
+          ADDITIONAL_METRICS: "release,pr"
+          WORKFLOW_SUMMARY_ENABLED: true
+
+      # This next step updates an existing issue. If you want a new issue every time, remove this step and remove the `issue-number: ${{ env.issue_number }}` line below.
+      # Uncomment these steps once you're happy with the results in the workflow summary
+      # - name: Generate GitHub App token
+      #   id: app-token
+      #   uses: actions/create-github-app-token@v1
+      #   with:
+      #     app-id: ${{ secrets.APP_ID }}
+      #     private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # - name: Check for the stale report issue
+      #   run: |
+      #     ISSUE_NUMBER=$(gh search issues "Stale-repository-report" --repo $REPO_WITH_OWNER --state open --match title --json number --jq ".[0].number")
+      #     echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_ENV"
+      #   env:
+      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      #     REPO_WITH_OWNER: ${{ github.repository }}
+
+      # - name: Create issue
+      #   uses: peter-evans/create-issue-from-file@v6
+      #   with:
+      #     issue-number: ${{ env.issue_number }}
+      #     title: Stale-repository-report
+      #     content-filepath: ./stale_repos.md
+      #     token: ${{ steps.app-token.outputs.token }}
+
