@@ -14,9 +14,7 @@ header_pages:
   - contributions.md
   - events.md
 
-author:
-  name: REG Open Source Service Area
-  email: "opensource-reg at turing.ac.uk"
+author: REG Open Source Service Area
 
 show_excerpts: true
 
