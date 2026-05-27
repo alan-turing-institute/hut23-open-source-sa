@@ -1,0 +1,22 @@
+title: REG Open Source Service Area
+description: Making the Alan Turing Institute a better open source citizen
+url: "https://alan-turing-institute.github.io"
+baseurl: "/hut23-open-source-sa"
+
+theme: minima
+
+minima:
+  skin: classic
+
+header_pages:
+  - hacksessions.md
+  - ospo.md
+  - contributions.md
+  - events.md
+
+author: REG Open Source Service Area
+
+show_excerpts: true
+
+plugins:
+  - jekyll-feed
