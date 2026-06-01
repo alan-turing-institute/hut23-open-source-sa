@@ -88,3 +88,4 @@ Contributions made during hacksessions. Links go to the relevant PR, issue, or c
 | Rosie Wood | mapreader / mapreader-examples | 2026-04-17 | Fixed tests for [mapreader-examples](https://github.com/maps-as-data/mapreader-examples) and working on testing [PR #580](https://github.com/maps-as-data/MapReader/pull/580) |
 | Penny Yong | FlexiChains.jl | 2026-04-17 | Work towards [issue #126](https://github.com/penelopeysm/FlexiChains.jl/issues/126) |
 | Penny Yong | PairPlots.jl | 2026-04-17 | [PR #78](https://github.com/sefffal/PairPlots.jl/pull/78) and [PR #166](https://github.com/penelopeysm/FlexiChains.jl/pull/166) |
+| Penny Yong | JuliaEditorSupport | 2026-05-16 | [PR #985](https://github.com/JuliaEditorSupport/JuliaFormatter.jl/pull/985) |
