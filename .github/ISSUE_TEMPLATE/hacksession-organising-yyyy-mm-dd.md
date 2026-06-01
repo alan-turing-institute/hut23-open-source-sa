@@ -14,4 +14,4 @@ TODO:
 - [ ] Check that the Slack workflow for advertising is doing its thing (reminders should go out a week before and the day of)
 - [ ] Run the event
 - [ ] Collect contributions to the session in the issue relevant to the session.
-- [ ] Update the main page with new contributions https://github.com/alan-turing-institute/research-engineering-group/wiki/Open-source-hacksessions
+- [ ] Update the [hacksession page](https://alan-turing-institute.github.io/hut23-open-source-sa/hacksessions/) with new contributions 
