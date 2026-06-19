@@ -89,3 +89,6 @@ Contributions made during hacksessions. Links go to the relevant PR, issue, or c
 | Penny Yong | FlexiChains.jl | 2026-04-17 | Work towards [issue #126](https://github.com/penelopeysm/FlexiChains.jl/issues/126) |
 | Penny Yong | PairPlots.jl | 2026-04-17 | [PR #78](https://github.com/sefffal/PairPlots.jl/pull/78) and [PR #166](https://github.com/penelopeysm/FlexiChains.jl/pull/166) |
 | Penny Yong | JuliaEditorSupport | 2026-05-16 | [PR #985](https://github.com/JuliaEditorSupport/JuliaFormatter.jl/pull/985) |
+| Iain Stenson | ghost-protocol | 2026-06-19 | [commit](https://github.com/alan-turing-institute/ghost-protocol/commit/9d900a8e3dfbb49fe236a488edd889db4269f3cd) |
+| Nick Barlow | ghost-protocol | 2026-06-19 | [PR #22](https://github.com/alan-turing-institute/ghost-protocol/pull/22) & [PR#](https://github.com/alan-turing-institute/ghost-protocol/pull/24) |
+| David Llewellyn-Jones | ghost-protocol | 2026-06-19 | [PR #23](https://github.com/alan-turing-institute/ghost-protocol/pull/23) |
