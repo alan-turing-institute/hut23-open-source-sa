@@ -92,3 +92,6 @@ Contributions made during hacksessions. Links go to the relevant PR, issue, or c
 | Iain Stenson | ghost-protocol | 2026-06-19 | [commit](https://github.com/alan-turing-institute/ghost-protocol/commit/9d900a8e3dfbb49fe236a488edd889db4269f3cd) |
 | Nick Barlow | ghost-protocol | 2026-06-19 | [PR #22](https://github.com/alan-turing-institute/ghost-protocol/pull/22) & [PR#](https://github.com/alan-turing-institute/ghost-protocol/pull/24) |
 | David Llewellyn-Jones | ghost-protocol | 2026-06-19 | [PR #23](https://github.com/alan-turing-institute/ghost-protocol/pull/23) |
+| Nick Barlow | ghost-protocol | 2026-09-18 | [PR #25](https://github.com/alan-turing-institute/ghost-protocol/pull/25) |
+| James Gedes | N/A | 2026-09-18 | Switching machine to use Guix and KDE |
+| David Llewellyn-Jones | lambda-calc | 2026-09-18 | [commit fb4ac48d](https://codeberg.org/flypig/lambda-calc/commit/fb4ac48d7b97dbaf5eba6ec28d29fa9e18badccb) |
