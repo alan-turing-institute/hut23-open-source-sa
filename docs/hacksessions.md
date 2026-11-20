@@ -95,3 +95,4 @@ Contributions made during hacksessions. Links go to the relevant PR, issue, or c
 | Nick Barlow | ghost-protocol | 2026-09-18 | [PR #25](https://github.com/alan-turing-institute/ghost-protocol/pull/25) |
 | James Gedes | N/A | 2026-09-18 | Switching machine to use Guix and KDE |
 | David Llewellyn-Jones | lambda-calc | 2026-09-18 | [commit fb4ac48d](https://codeberg.org/flypig/lambda-calc/commit/fb4ac48d7b97dbaf5eba6ec28d29fa9e18badccb) |
+| David Llewellyn-Jones &amp; Nick Barlow | git-review | 2026-11-20 | [Issue #13](https://codeberg.org/flypig/git-review/issues/13), [PR #15](https://codeberg.org/flypig/git-review/pulls/15) |
